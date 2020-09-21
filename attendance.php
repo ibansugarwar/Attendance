@@ -2,14 +2,21 @@
 if(isset($_POST['in'])) {
   require "dbConnect.php";
   $db = new dbConnect;
-  $db->db_regist_inTime("2020-09-01","1","12:11:12");
-  echo "OK";
+  $stmt = $db->db_select_inTimeCheck("2020-09-21","1");
+  $rec = $stmt->fetch(PDO::FETCH_ASSOC);  // DB検索結果を1行取り出し
+
+  if($rec == true){
+    echo $rec[0];
+    echo $rec[1];
+    echo "既に出勤済み";
+  }else{
+    $db->db_regist_inTime(date("Y-m-d"),"1",date("H:i:s")); //引数：今日の日付,id,現在時間
+  }
 
 }else{
 
 }
 ?>
-
 
 
 
@@ -145,6 +152,7 @@ if(isset($_POST['in'])) {
       <?php
         // $this_month = date("m");
         // $today = date("Y-m-d H:i:s");
+        $today = date("Y-m-d");
         // echo $this_month.'<br>';
         // echo $today;
 
@@ -207,10 +215,11 @@ if(isset($_POST['in'])) {
         <tbody>
 
           <?php
+          echo date('Y-m-d G:i:s').'<br>';
           /* DB接続 ********************************************************************************/
           require "dbConnect.php";
           $db = new dbConnect;
-          $stmt = $db->db_select_all();
+          $stmt = $db->db_select_all("2020-09-01","2020-09-30","1");
 
           /****************************************************************************************/
           $week_array = array( "日", "月", "火", "水", "木", "金", "土" );
@@ -230,16 +239,6 @@ if(isset($_POST['in'])) {
             echo '<input type="hidden" name=day_array["'.$i.']">';
 
             $rec = $stmt->fetch(PDO::FETCH_ASSOC);  // DB検索結果を1行取り出し
-            if($rec == true){
-              $db_inTime = $rec['inTime'];
-              $db_outTime = $rec['outTime'];
-              $db_restTime = $rec['restTime'];
-            }else{
-              $db_inTime = "";
-              $db_outTime = "";
-              $db_restTime = "";
-            }
-            // echo $rec['inTime'];
 
             if($week_num == 0){
               echo '<tr style="background-color:red">';
@@ -248,16 +247,58 @@ if(isset($_POST['in'])) {
             }else{
               echo '<tr>';
             }
-            // echo '<td><a href="./attendanceDetails.php">'.$i.'</a></td>
-            echo '<td><input type="submit" action="./attendanceDetails.php" value="'.$i.'"></td>
-            <td>'.$week_array[date('w', strtotime($day))].'</td>
-            <td>'.$db_inTime.'</td>
-            <td>'.$db_outTime.'</td>
-            <td>'.$db_restTime.'</td>
-            <td>'.date('m').'</td>
-            <td></td>
-          </tr>';
+
+            if($rec == true){
+              $db_inTime = date('G:i',strtotime($rec['inTime']));
+              $db_outTime = date('G:i',strtotime($rec['outTime']));
+              $db_restTime = date('G:i',strtotime($rec['restTime']));
+              $db_day = substr($rec['date'], -2);
+            }
+
+            if($i==$db_day){
+              // echo '<td><a href="./attendanceDetails.php">'.$i.'</a></td>
+              echo '<td><input type="submit" action="./attendanceDetails.php" value="'.$i.'"></td>
+              <td>'.$week_array[date('w', strtotime($day))].'</td>
+              <td>'.$db_inTime.'</td>
+              <td>'.$db_outTime.'</td>
+              <td>'.$db_restTime.'</td>
+              <td>'.date('m').'</td>
+              <td></td>
+            </tr>';
+            }else{
+              // echo '<td><a href="./attendanceDetails.php">'.$i.'</a></td>
+              echo '<td><input type="submit" action="./attendanceDetails.php" value="'.$i.'"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>';
+            }
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// echo 'intime'.date('G:i',strtotime($rec['inTime'])).'<br>';
+// echo 'outtime'.date('G:i',strtotime($rec['outTime'])).'<br>';
+// echo 'resttime'.date('G:i',strtotime($rec['restTime'])).'<br>';
+
+
+
+
 
         ?>
       </form>

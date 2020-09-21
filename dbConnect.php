@@ -15,15 +15,37 @@ class dbConnect{
     return $dbh;
   }
 
-  function db_select_all(){
+  function db_select_all($minDate,$maxDate,$userID){
     try{
       $dbh = $this->db_connect();
 
-      $sql = 'SELECT * FROM attendance WHERE 1';
+      $sql = 'SELECT * FROM attendance WHERE id=? AND date BETWEEN ? AND ?';
       $stmt = $dbh->prepare($sql);
-      $stmt->execute();
+      $data[] = $userID;
+      $data[] = $minDate;
+      $data[] = $maxDate;
+      $stmt->execute($data);
   
-      $sbh = null;
+      $dbh = null;
+    }catch(Exception $e){
+      echo "抽出エラー";
+      exit();
+    }
+
+    return $stmt;
+  }
+
+  function db_select_inTimeCheck($date,$userID){
+    try{
+      $dbh = $this->db_connect();
+
+      $sql = 'SELECT * FROM attendance WHERE id=? AND date =? AND inTime <> "00:00:00"';
+      $stmt = $dbh->prepare($sql);
+      $data[] = $userID;
+      $data[] = $date;
+      $stmt->execute($data);
+
+      $dbh = null;
     }catch(Exception $e){
       echo "抽出エラー";
       exit();
@@ -42,14 +64,12 @@ class dbConnect{
       $data[] = $date;
       $data[] = $userID;
       $stmt->execute($data);
-      echo $data;
-  
-      $sbh = null;
+
+      $dbh = null;
     }catch(Exception $e){
       echo "登録エラー";
       exit();
     }
-    return "";
   }
 
 
