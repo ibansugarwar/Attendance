@@ -1,3 +1,26 @@
+<?php
+if(isset($_POST['in'])) {
+  require "dbConnect.php";
+  $db = new dbConnect;
+  $db->db_regist_inTime("2020-09-01","1","12:11:12");
+  echo "OK";
+
+}else{
+
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -8,7 +31,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>勤怠管理</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -50,10 +73,12 @@
       
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <!-- <button class="btn btn-primary" id="menu-toggle">トグル</button> -->
-        <button class="btn btn-primary" id="dakoku" action="attendanceRegist">出勤</button>
-        <p>ここに時刻をリアルタイムで表示</p>
-        <button class="btn btn-primary" id="dakoku">退勤</button>
 
+        <form action="attendance.php" method="post">
+          <button class="btn btn-primary" id="dakoku" type="submit" name="in">出勤</button>
+          <p>ここに時刻をリアルタイムで表示</p>
+          <button class="btn btn-primary" id="dakoku" type="submit" name="out">退勤</button>
+        </form>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -146,6 +171,25 @@
 
     <!------------------------------------------------------------------------------------>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div class="container-fluid">
     <table class="table table-hover">
       <form method="POST" action="attendanceDetails.php">
@@ -165,7 +209,7 @@
           <?php
           /* DB接続 ********************************************************************************/
           require "dbConnect.php";
-          $db = new dbSelect;
+          $db = new dbConnect;
           $stmt = $db->db_select_all();
 
           /****************************************************************************************/

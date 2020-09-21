@@ -39,5 +39,16 @@
 
 
 
+
+
+
+
+
+
+
+  <a href="attendance.php">ボタン</a>
+
+
+
 </body>
 </html>
