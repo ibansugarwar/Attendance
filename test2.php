@@ -7,5 +7,11 @@
 </head>
 <body>
   <h1>test</h1>
+
+  <?php
+  $name=$_POST[4];
+  echo $name;
+  ?>
+
 </body>
 </html>
